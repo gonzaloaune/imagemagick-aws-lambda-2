@@ -127,12 +127,9 @@ $(LIBDE265_SOURCE):
 $(CACHE_DIR)/lib/libde256.a: $(LIBDE265_SOURCE)
 	tar xf $<
 	cd libde265-*
-	mkdir -p build
-	cd build 
-	PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig cmake .. \
-		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_INSTALL_PREFIX=$(CACHE_DIR)
-	make clean
+	./autogen.sh
+	$(CONFIGURE)
+	make
 	make install
 
 ## libheif
@@ -146,12 +143,9 @@ $(LIBHEIF_SOURCE):
 $(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
 	tar xf $<
 	cd libheif-*
-	mkdir -p build
-	cd build 
-	PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig cmake --preset=release .. \
-		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_INSTALL_PREFIX=$(CACHE_DIR)
-	make clean
+	./autogen.sh
+	$(CONFIGURE)
+	make
 	make install
 
 
