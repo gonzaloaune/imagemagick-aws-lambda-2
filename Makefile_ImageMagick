@@ -15,6 +15,13 @@ CACHE_DIR=$(PROJECT_ROOT)build/cache
 
 .ONESHELL:
 
+curl -LO https://github.com/Kitware/CMake/releases/download/v3.31.2/cmake-3.31.2.tar.gz
+tar xf cmake-3.31.2.tar.gz
+cd cmake-3.31.2
+./configure
+make
+sudo make install
+
 CONFIGURE = PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig \
 	./configure \
 		CPPFLAGS=-I$(CACHE_DIR)/include \
@@ -47,6 +54,7 @@ $(LIBHEIF_SOURCE):
 $(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
 	tar xf $<
 	cd libheif*
+	mkdir build
 	cd build
 	cmake --preset=release CPPFLAGS=-I$(CACHE_DIR)/include \
 		LDFLAGS=-L$(CACHE_DIR)/lib \
