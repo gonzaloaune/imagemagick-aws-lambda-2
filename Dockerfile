@@ -17,5 +17,5 @@ RUN chown root:root /tmp && \
   yum install -y glibc-langpack-en && \
   yum groupinstall -y development && \
   yum install -y which clang cmake python-devel python3-devel && \
-  dnf install -y docker pip pyliblzma && \  
+  dnf install -y docker pip xz xz-devel && \  
   yum clean all 
