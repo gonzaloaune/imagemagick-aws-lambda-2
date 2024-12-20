@@ -180,7 +180,7 @@ LIBS:=$(CACHE_DIR)/lib/libjpeg.a \
 
 $(TARGET_DIR)/bin/identify: $(IMAGE_MAGICK_SOURCE) $(LIBS)
 	tar xf $<
-	cd ImageMa*
+	@bzip2_dir=$$(ls -d ImageMa*/) && cd $$bzip2_dir && \
 	PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig \
 		./configure \
 		CPPFLAGS=-I$(CACHE_DIR)/include \
