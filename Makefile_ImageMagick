@@ -155,14 +155,14 @@ $(IMAGE_MAGICK_SOURCE):
 	curl -L https://github.com/ImageMagick/ImageMagick/archive/$(IMAGEMAGICK_VERSION).tar.gz -o $(IMAGE_MAGICK_SOURCE)
 
 
-LIBS:=$(CACHE_DIR)/lib/libjpeg.a \
+LIBS:=$(CACHE_DIR)/lib/libde265.a \
+	$(CACHE_DIR)/lib/libheif.a \
+	$(CACHE_DIR)/lib/libjpeg.a \
 	$(CACHE_DIR)/lib/libpng.a \
 	$(CACHE_DIR)/lib/libopenjp2.a \
 	$(CACHE_DIR)/lib/libtiff.a \
 	$(CACHE_DIR)/lib/libbz2.a \
-	$(CACHE_DIR)/lib/libwebp.a \
-	$(CACHE_DIR)/lib/libde265.a \
-	$(CACHE_DIR)/lib/libheif.a
+	$(CACHE_DIR)/lib/libwebp.a
 
 $(TARGET_DIR)/bin/identify: $(IMAGE_MAGICK_SOURCE) $(LIBS)
 	tar xf $<
