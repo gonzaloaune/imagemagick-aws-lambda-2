@@ -8,24 +8,12 @@ IMAGEMAGICK_VERSION ?= 7.0.8-45
 LIBHEIF_VERSION ?= 1.19.5
 LIBDE265_VERSION ?= 1.0.5
 LCMS_VERSION ?= 2.12
-CMAKE_VERSION ?= 3.31.2
 
 TARGET_DIR ?= /opt/
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 CACHE_DIR=$(PROJECT_ROOT)build/cache
 
 .ONESHELL:
-
-## cmake
-CMAKE_SOURCE=cmake-$(CMAKE_VERSION)-linux-x86_64.tar.gz
-
-$(CMAKE_SOURCE):
-	curl -LO https://github.com/Kitware/CMake/releases/download/v$(CMAKE_VERSION)/$(CMAKE_SOURCE)
-	
-$(CACHE_DIR)/lib/cmake.a: $(CMAKE_SOURCE)
-	tar xf $<
-	cd cmake*
-	cp bin/* /usr/bin/
 
 CONFIGURE = PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig \
 	./configure \
