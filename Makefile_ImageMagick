@@ -47,8 +47,12 @@ $(LIBHEIF_SOURCE):
 $(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
 	tar xf $<
 	cd libheif*
-	./autogen.sh
-	$(CONFIGURE)
+	cmake --preset=release CPPFLAGS=-I$(CACHE_DIR)/include \
+		LDFLAGS=-L$(CACHE_DIR)/lib \
+		--disable-dependency-tracking \
+		--disable-shared \
+		--enable-static \
+		--prefix=$(CACHE_DIR) ..
 	make
 	make install
 
