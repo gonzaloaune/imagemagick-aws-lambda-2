@@ -4,6 +4,8 @@ OPENJP2_VERSION ?= 2.3.1
 LIBTIFF_VERSION ?= 4.0.9
 BZIP2_VERSION ?= 1.0.6
 LIBWEBP_VERSION ?= 0.6.1
+LIBDE265_VERSION ?= 1.0.15
+LIBHEIF_VERSION ?= 1.19.5
 IMAGEMAGICK_VERSION ?= 7.0.8-45
 
 TARGET_DIR ?= /opt/
@@ -114,6 +116,45 @@ $(CACHE_DIR)/lib/libopenjp2.a: $(OPENJP2_SOURCE) $(CACHE_DIR)/lib/libpng.a $(CAC
 	make install
 
 
+## libde265
+
+LIBDE265_SOURCE=libde265-$(LIBDE265_VERSION).tar.gz
+
+$(LIBDE265_SOURCE):
+	curl -L https://github.com/strukturag/libde265/releases/download/v$(LIBDE265_SOURCE)/libde265-$(LIBDE265_SOURCE).tar.gz -o $(LIBDE265_SOURCE)
+
+
+$(CACHE_DIR)/lib/libde256.a: $(LIBDE265_SOURCE)
+	tar xf $<
+	cd libde265-*
+	mkdir -p build
+	cd build 
+	PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig cmake .. \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=$(CACHE_DIR)
+	make clean
+	make install
+
+## libheif
+
+LIBHEIF_SOURCE=libheif-$(LIBHEIF_VERSION).tar.gz
+
+$(LIBHEIF_SOURCE):
+	curl -L https://github.com/strukturag/libheif/releases/download/v$(LIBHEIF_SOURCE)/libheif-$(LIBHEIF_SOURCE).tar.gz -o $(LIBHEIF_SOURCE)
+
+
+$(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
+	tar xf $<
+	cd libheif-*
+	mkdir -p build
+	cd build 
+	PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig cmake --preset=release .. \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=$(CACHE_DIR)
+	make clean
+	make install
+
+
 ## ImageMagick
 
 IMAGE_MAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION).tar.gz
@@ -127,7 +168,9 @@ LIBS:=$(CACHE_DIR)/lib/libjpeg.a \
 	$(CACHE_DIR)/lib/libopenjp2.a \
 	$(CACHE_DIR)/lib/libtiff.a \
 	$(CACHE_DIR)/lib/libbz2.a \
-	$(CACHE_DIR)/lib/libwebp.a
+	$(CACHE_DIR)/lib/libwebp.a \
+	$(CACHE_DIR)/lib/libde265.a \
+	$(CACHE_DIR)/lib/libheif.a
 
 $(TARGET_DIR)/bin/identify: $(IMAGE_MAGICK_SOURCE) $(LIBS)
 	tar xf $<
