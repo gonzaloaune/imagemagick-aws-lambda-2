@@ -4,9 +4,10 @@ OPENJP2_VERSION ?= 2.3.1
 LIBTIFF_VERSION ?= 4.0.9
 BZIP2_VERSION ?= latest
 LIBWEBP_VERSION ?= 0.6.1
-LIBDE265_VERSION ?= 1.0.15
-LIBHEIF_VERSION ?= 1.19.5
 IMAGEMAGICK_VERSION ?= 7.0.8-45
+LIBHEIF_VERSION ?= 1.6.1
+LIBDE265_VERSION ?= 1.0.5
+LCMS_VERSION ?= 2.12
 
 TARGET_DIR ?= /opt/
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -24,14 +25,12 @@ CONFIGURE = PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig \
 		--prefix=$(CACHE_DIR)
 
 ## libde265
-
 LIBDE265_SOURCE=libde265-$(LIBDE265_VERSION).tar.gz
 
 $(LIBDE265_SOURCE):
-	curl -LO https://github.com/strukturag/libde265/releases/download/v$(LIBDE265_SOURCE)/libde265-$(LIBDE265_SOURCE)
-
-
-$(CACHE_DIR)/lib/libde256.a: $(LIBDE265_SOURCE)
+	curl -LO https://github.com/strukturag/libde265/releases/download/v$(LIBDE265_VERSION)/$(LIBDE265_SOURCE)
+	
+$(CACHE_DIR)/lib/libde265.a: $(LIBDE265_SOURCE)
 	tar xf $<
 	cd libde265*
 	./autogen.sh
@@ -39,13 +38,11 @@ $(CACHE_DIR)/lib/libde256.a: $(LIBDE265_SOURCE)
 	make
 	make install
 
-## libheif
-
+## libheic
 LIBHEIF_SOURCE=libheif-$(LIBHEIF_VERSION).tar.gz
 
 $(LIBHEIF_SOURCE):
-	curl -LO https://github.com/strukturag/libheif/releases/download/v$(LIBHEIF_SOURCE)/libheif-$(LIBHEIF_SOURCE)
-
+	curl -LO https://github.com/strukturag/libheif/releases/download/v$(LIBHEIF_VERSION)/$(LIBHEIF_SOURCE)
 
 $(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
 	tar xf $<
@@ -56,7 +53,6 @@ $(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
 	make install
 
 ## libjpg
-
 LIBJPG_SOURCE=jpegsrc.v$(LIBJPG_VERSION).tar.gz
 
 $(LIBJPG_SOURCE):
@@ -126,6 +122,20 @@ $(CACHE_DIR)/lib/libwebp.a: $(LIBWEBP_SOURCE)
 	make
 	make install
 
+LCMS_SOURCE=lcms2-$(LCMS_VERSION).tar.gz
+
+$(LCMS_SOURCE):
+	curl -L https://github.com/mm2/Little-CMS/releases/download/lcms$(LCMS_VERSION)/lcms2-$(LCMS_VERSION).tar.gz -o $(LCMS_SOURCE)
+	
+$(CACHE_DIR)/lib/liblcms2.a: $(LCMS_SOURCE)
+	tar xf $<
+	cd lcms2-*
+	sh autogen.sh
+	$(CONFIGURE)	 
+	make
+	make install
+
+
 ## libopenjp2
 
 OPENJP2_SOURCE=openjp2-$(OPENJP2_VERSION).tar.gz
@@ -147,6 +157,7 @@ $(CACHE_DIR)/lib/libopenjp2.a: $(OPENJP2_SOURCE) $(CACHE_DIR)/lib/libpng.a $(CAC
 	make clean
 	make install
 
+
 ## ImageMagick
 
 IMAGE_MAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION).tar.gz
@@ -162,7 +173,8 @@ LIBS:=$(CACHE_DIR)/lib/libjpeg.a \
 	$(CACHE_DIR)/lib/libbz2.a \
 	$(CACHE_DIR)/lib/libwebp.a \
 	$(CACHE_DIR)/lib/libde265.a \
-	$(CACHE_DIR)/lib/libheif.a
+	$(CACHE_DIR)/lib/libheif.a \
+	$(CACHE_DIR)/lib/liblcms2.a
 
 $(TARGET_DIR)/bin/identify: $(IMAGE_MAGICK_SOURCE) $(LIBS)
 	tar xf $<
@@ -170,11 +182,12 @@ $(TARGET_DIR)/bin/identify: $(IMAGE_MAGICK_SOURCE) $(LIBS)
 	PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig \
 		./configure \
 		CPPFLAGS=-I$(CACHE_DIR)/include \
-		LDFLAGS=-L$(CACHE_DIR)/lib -lstdc++ \
+		LDFLAGS="-L$(CACHE_DIR)/lib -lstdc++" \
 		--disable-dependency-tracking \
 		--disable-shared \
 		--enable-static \
 		--with-heic=yes \
+		--with-lcms=yes \
 		--prefix=$(TARGET_DIR) \
 		--enable-delegate-build \
 		--without-modules \
