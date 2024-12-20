@@ -47,6 +47,7 @@ $(LIBHEIF_SOURCE):
 $(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
 	tar xf $<
 	cd libheif*
+	cd build
 	cmake --preset=release CPPFLAGS=-I$(CACHE_DIR)/include \
 		LDFLAGS=-L$(CACHE_DIR)/lib \
 		--disable-dependency-tracking \
