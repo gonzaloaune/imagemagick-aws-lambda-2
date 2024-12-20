@@ -195,7 +195,7 @@ LIBS:=$(CACHE_DIR)/lib/libjpeg.a \
 	$(CACHE_DIR)/lib/libde265.a \
 	$(CACHE_DIR)/lib/libheif.a \
 	$(CACHE_DIR)/lib/liblcms2.a \
-	$(CACHE_DIR)/lib/cmake.a:
+	$(CACHE_DIR)/lib/cmake.a
 
 $(TARGET_DIR)/bin/identify: $(IMAGE_MAGICK_SOURCE) $(LIBS)
 	tar xf $<
