@@ -7,8 +7,7 @@ RUN yum update -y && yum install -y \
 	cmake \
     zip tar gzip \
     gcc \
-    aws-cli \
-    ImageMagick
+    aws-cli
 
 # Set up the working directory
 WORKDIR /var/task
