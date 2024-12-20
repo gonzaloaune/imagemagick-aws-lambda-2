@@ -49,10 +49,10 @@ $(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
 	@bzip2_dir=$$(ls -d libheif*/) && cd $$bzip2_dir && \
 	mkdir build
 	cd build
-	cmake --preset=release \ 
-		-DBUILD_SHARED_LIBS=OFF \
+	cmake -DBUILD_SHARED_LIBS=OFF \
 		CPPFLAGS=-I$(CACHE_DIR)/include \
-		LDFLAGS=-L$(CACHE_DIR)/lib ..
+		LDFLAGS=-L$(CACHE_DIR)/lib \
+		--preset=release ..
 	make
 	make install
 
