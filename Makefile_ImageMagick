@@ -25,7 +25,7 @@ $(CMAKE_SOURCE):
 $(CACHE_DIR)/lib/cmake.a: $(CMAKE_SOURCE)
 	tar xf $<
 	cd cmake*
-	./configure
+	./configure -DCMAKE_USE_OPENSSL=OFF
 	make
 	make install
 
