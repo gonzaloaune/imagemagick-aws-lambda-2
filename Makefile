@@ -24,7 +24,7 @@ bash: build-image
 	$(DOCKER_RUN) $(DOCKER_IMAGE)
 
 all libs: build-image
-	$(DOCKER_RUN) $(DOCKER_IMAGE) /usr/bin/make TARGET_DIR=$(TARGET) -f ../Makefile_ImageMagick $@
+	$(DOCKER_RUN) $(DOCKER_IMAGE) --entrypoint /usr/bin/make TARGET_DIR=$(TARGET) -f ../Makefile_ImageMagick $@
 
 STACK_NAME ?= imagemagick-layer
 
