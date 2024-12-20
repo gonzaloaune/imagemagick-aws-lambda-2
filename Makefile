@@ -1,15 +1,15 @@
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+
 DOCKER_IMAGE = imagemagick-builder
+DOCKER_BUILD = docker build -t $(DOCKER_IMAGE) .
 TARGET ?=/opt/
 
 MOUNTS = -v $(PROJECT_ROOT):/var/task \
 	-v $(PROJECT_ROOT)result:$(TARGET)
 
-DOCKER_BUILD = docker build -t $(DOCKER_IMAGE) .
-DOCKER_RUN = docker run -it --rm -w=/var/task $(MOUNTS)
-
-build result:
-	mkdir -p $@
+DOCKER = docker run -it --rm -w=/var/task/build
+build result: 
+	mkdir $@
 
 clean:
 	rm -rf build result
@@ -17,21 +17,27 @@ clean:
 build-image:
 	$(DOCKER_BUILD)
 
-list-formats: build-image
-	$(DOCKER_RUN) $(DOCKER_IMAGE) /opt/bin/identify -list format
+list-formats:
+	$(DOCKER) $(MOUNTS) --entrypoint /opt/bin/identify -t $(DOCKER_IMAGE) -list format
 
-bash: build-image
-	$(DOCKER_RUN) $(DOCKER_IMAGE)
+bash:
+	$(DOCKER) $(MOUNTS) --entrypoint /bin/bash -t $(DOCKER_IMAGE)
 
 all libs: build-image
-	$(DOCKER_RUN) $(DOCKER_IMAGE) --entrypoint /usr/bin/make TARGET_DIR=$(TARGET) -f ../Makefile_ImageMagick $@
+	$(DOCKER) $(MOUNTS) --entrypoint /usr/bin/make -t $(DOCKER_IMAGE) TARGET_DIR=$(TARGET) -f ../Makefile_ImageMagick $@
 
-STACK_NAME ?= imagemagick-layer
+
+STACK_NAME ?= imagemagick-layer 
 
 result/bin/identify: all
 
 build/layer.zip: result/bin/identify build
-	# Compress symlinks as symlinks to avoid packaging issues
+	# imagemagick has a ton of symlinks, and just using the source dir in the template
+	# would cause all these to get packaged as individual files. 
+	# (https://github.com/aws/aws-cli/issues/2900) 
+	#
+	# This is why we zip outside, using -y to store them as symlinks
+	
 	cd result && zip -ry $(PROJECT_ROOT)$@ *
 
 build/output.yaml: template.yaml build/layer.zip

@@ -5,7 +5,7 @@ FROM amazonlinux:2023
 RUN yum update -y && yum install -y \
     make \
 	cmake \
-    zip \
+    zip tar gzip \
     gcc \
     aws-cli \
     ImageMagick

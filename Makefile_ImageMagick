@@ -172,8 +172,7 @@ $(IMAGE_MAGICK_SOURCE):
 	curl -L https://github.com/ImageMagick/ImageMagick/archive/$(IMAGEMAGICK_VERSION).tar.gz -o $(IMAGE_MAGICK_SOURCE)
 
 
-LIBS:=$(CACHE_DIR)/lib/cmake.a \
-	$(CACHE_DIR)/lib/libjpeg.a \
+LIBS:=$(CACHE_DIR)/lib/libjpeg.a \
 	$(CACHE_DIR)/lib/libpng.a \
 	$(CACHE_DIR)/lib/libopenjp2.a \
 	$(CACHE_DIR)/lib/libtiff.a \
