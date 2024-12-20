@@ -28,12 +28,12 @@ CONFIGURE = PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig \
 LIBDE265_SOURCE=libde265-$(LIBDE265_VERSION).tar.gz
 
 $(LIBDE265_SOURCE):
-	curl -L https://github.com/strukturag/libde265/releases/download/v$(LIBDE265_SOURCE)/libde265-$(LIBDE265_SOURCE).tar.gz -o $(LIBDE265_SOURCE)
+	curl -LO https://github.com/strukturag/libde265/releases/download/v$(LIBDE265_SOURCE)/libde265-$(LIBDE265_SOURCE)
 
 
 $(CACHE_DIR)/lib/libde256.a: $(LIBDE265_SOURCE)
 	tar xf $<
-	cd libde265-*
+	cd libde265*
 	./autogen.sh
 	$(CONFIGURE)
 	make
@@ -44,12 +44,12 @@ $(CACHE_DIR)/lib/libde256.a: $(LIBDE265_SOURCE)
 LIBHEIF_SOURCE=libheif-$(LIBHEIF_VERSION).tar.gz
 
 $(LIBHEIF_SOURCE):
-	curl -L https://github.com/strukturag/libheif/releases/download/v$(LIBHEIF_SOURCE)/libheif-$(LIBHEIF_SOURCE).tar.gz -o $(LIBHEIF_SOURCE)
+	curl -LO https://github.com/strukturag/libheif/releases/download/v$(LIBHEIF_SOURCE)/libheif-$(LIBHEIF_SOURCE)
 
 
 $(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
 	tar xf $<
-	cd libheif-*
+	cd libheif*
 	./autogen.sh
 	$(CONFIGURE)
 	make
