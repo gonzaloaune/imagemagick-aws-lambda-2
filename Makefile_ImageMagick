@@ -8,6 +8,7 @@ IMAGEMAGICK_VERSION ?= 7.0.8-45
 LIBHEIF_VERSION ?= 1.19.5
 LIBDE265_VERSION ?= 1.0.5
 LCMS_VERSION ?= 2.12
+CMAKE_VERSION ?= 3.31.2
 
 TARGET_DIR ?= /opt/
 PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -15,12 +16,18 @@ CACHE_DIR=$(PROJECT_ROOT)build/cache
 
 .ONESHELL:
 
-curl -LO https://github.com/Kitware/CMake/releases/download/v3.31.2/cmake-3.31.2.tar.gz
-tar xf cmake-3.31.2.tar.gz
-cd cmake-3.31.2
-./configure
-make
-sudo make install
+## cmake
+CMAKE_SOURCE=cmake-$(CMAKE_VERSION).tar.gz
+
+$(CMAKE_SOURCE):
+	curl -LO https://github.com/Kitware/CMake/releases/download/v$(CMAKE_VERSION)/$(CMAKE_SOURCE)
+	
+$(CACHE_DIR)/lib/cmake.a: $(CMAKE_SOURCE)
+	tar xf $<
+	cd cmake*
+	./configure
+	make
+	make install
 
 CONFIGURE = PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig \
 	./configure \
@@ -187,7 +194,8 @@ LIBS:=$(CACHE_DIR)/lib/libjpeg.a \
 	$(CACHE_DIR)/lib/libwebp.a \
 	$(CACHE_DIR)/lib/libde265.a \
 	$(CACHE_DIR)/lib/libheif.a \
-	$(CACHE_DIR)/lib/liblcms2.a
+	$(CACHE_DIR)/lib/liblcms2.a \
+	$(CACHE_DIR)/lib/cmake.a:
 
 $(TARGET_DIR)/bin/identify: $(IMAGE_MAGICK_SOURCE) $(LIBS)
 	tar xf $<
