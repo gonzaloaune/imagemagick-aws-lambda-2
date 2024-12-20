@@ -51,7 +51,7 @@ $(CACHE_DIR)/lib/libheif.a: $(LIBHEIF_SOURCE)
 	cd build
 	cmake --preset=release \ 
 		-DBUILD_SHARED_LIBS=OFF \
-		-DCMAKE_INSTALL_PREFIX=$(CACHE_DIR)
+		-DCMAKE_INSTALL_PREFIX=$(CACHE_DIR) \
 		CPPFLAGS=-I$(CACHE_DIR)/include \
 		LDFLAGS=-L$(CACHE_DIR)/lib ..
 	make
