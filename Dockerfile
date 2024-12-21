@@ -8,7 +8,12 @@ RUN yum update -y && yum install -y \
     zip tar gzip xz \
     gcc \
     aws-cli \
-	xz-devel
+	xz-devel \
+	gcc-c++ \
+	bison \
+	gawk \
+	texinfo \
+	python3
 
 # Set up the working directory
 WORKDIR /var/task
