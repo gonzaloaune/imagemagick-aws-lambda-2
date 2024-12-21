@@ -24,6 +24,43 @@ CONFIGURE = PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig \
 		--enable-static \
 		--prefix=$(CACHE_DIR)
 
+GLIBC_VERSION = 2.34
+GLIBC_SOURCE = glibc-$(GLIBC_VERSION).tar.gz
+
+$(GLIBC_SOURCE):
+	curl -LO http://ftp.gnu.org/gnu/libc/$(GLIBC_SOURCE)
+
+$(CACHE_DIR)/lib/libc.a: $(GLIBC_SOURCE)
+	tar xf $<
+	cd glibc-$(GLIBC_VERSION) && \
+	mkdir build && cd build && \
+	../configure --prefix=$(CACHE_DIR) --disable-shared && \
+	make && make install
+
+ZLIB_VERSION = 1.2.12
+ZLIB_SOURCE = zlib-$(ZLIB_VERSION).tar.gz
+
+$(ZLIB_SOURCE):
+	curl -LO https://zlib.net/$(ZLIB_SOURCE)
+
+$(CACHE_DIR)/lib/libz.a: $(ZLIB_SOURCE)
+	tar xf $<
+	cd zlib-$(ZLIB_VERSION) && \
+	./configure --static --prefix=$(CACHE_DIR) && \
+	make && make install
+
+GCC_VERSION = 11.3.0
+GCC_SOURCE = gcc-$(GCC_VERSION).tar.gz
+
+$(GCC_SOURCE):
+	curl -LO https://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)/$(GCC_SOURCE)
+
+$(CACHE_DIR)/lib/libstdc++.a: $(GCC_SOURCE)
+	tar xf $<
+	cd gcc-$(GCC_VERSION) && \
+	mkdir build && cd build && \
+	../configure --disable-multilib --enable-languages=c,c++ --prefix=$(CACHE_DIR) && \
+	make && make install
 ## libzma
 
 LIBZMA_SOURCE = liblzma
@@ -184,7 +221,10 @@ $(IMAGE_MAGICK_SOURCE):
 	curl -L https://github.com/ImageMagick/ImageMagick/archive/$(IMAGEMAGICK_VERSION).tar.gz -o $(IMAGE_MAGICK_SOURCE)
 
 
-LIBS:=$(CACHE_DIR)/lib/liblzma.a \
+LIBS:=$(CACHE_DIR)/lib/libc.a \
+	$(CACHE_DIR)/lib/libz.a \
+	$(CACHE_DIR)/lib/libstdc++.a \
+	$(CACHE_DIR)/lib/liblzma.a \
 	$(CACHE_DIR)/lib/libjpeg.a \
 	$(CACHE_DIR)/lib/libpng.a \
 	$(CACHE_DIR)/lib/libopenjp2.a \
