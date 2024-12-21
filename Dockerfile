@@ -5,9 +5,10 @@ FROM amazonlinux:2023
 RUN yum update -y && yum install -y \
     make \
 	cmake \
-    zip tar gzip \
+    zip tar gzip xz \
     gcc \
-    aws-cli
+    aws-cli \
+	xz-devel
 
 # Set up the working directory
 WORKDIR /var/task

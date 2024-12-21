@@ -24,6 +24,20 @@ CONFIGURE = PKG_CONFIG_PATH=$(CACHE_DIR)/lib/pkgconfig \
 		--enable-static \
 		--prefix=$(CACHE_DIR)
 
+## libzma
+
+LIBZMA_SOURCE = liblzma
+
+$(LIBZMA_SOURCE):
+	[ ! -d liblzma ] && git clone https://github.com/kobolabs/liblzma.git liblzma || true
+	
+$(CACHE_DIR)/lib/liblzma.a: $(LIBZMA_SOURCE)
+	cd liblzma && \
+	./autogen.sh && \
+	$(CONFIGURE) && \
+	make && \
+	make install
+
 ## libde265
 LIBDE265_SOURCE=libde265-$(LIBDE265_VERSION).tar.gz
 
@@ -170,7 +184,8 @@ $(IMAGE_MAGICK_SOURCE):
 	curl -L https://github.com/ImageMagick/ImageMagick/archive/$(IMAGEMAGICK_VERSION).tar.gz -o $(IMAGE_MAGICK_SOURCE)
 
 
-LIBS:=$(CACHE_DIR)/lib/libjpeg.a \
+LIBS:=$(CACHE_DIR)/lib/liblzma.a \
+	$(CACHE_DIR)/lib/libjpeg.a \
 	$(CACHE_DIR)/lib/libpng.a \
 	$(CACHE_DIR)/lib/libopenjp2.a \
 	$(CACHE_DIR)/lib/libtiff.a \
